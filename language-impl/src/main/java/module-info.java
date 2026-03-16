@@ -22,6 +22,7 @@ module consulo.docker.language.impl {
     requires consulo.docker.language.api;
 
     exports consulo.docker.language.impl;
+    exports consulo.docker.language.impl.completion;
     exports consulo.docker.language.impl.highlighting;
     exports consulo.docker.language.impl.psi;
     exports consulo.docker.language.impl.syntax;

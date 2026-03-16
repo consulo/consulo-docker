@@ -43,7 +43,7 @@ SINGLE_QUOTED_STRING='([^\\'\r\n]|\\[^\r\n])*'?
 VARIABLE=\$\{[^}]+\}|\$[a-zA-Z_][a-zA-Z0-9_]*
 FLAG=--[a-zA-Z][-a-zA-Z0-9]*
 NUMBER=[0-9]+
-IDENTIFIER=[a-zA-Z_][a-zA-Z0-9_]*([.\-/][a-zA-Z0-9_]+)*
+IDENTIFIER=[-a-zA-Z0-9_/.~+][-a-zA-Z0-9_.~/+]*
 COMMENT=#[^\r\n]*
 
 %%
