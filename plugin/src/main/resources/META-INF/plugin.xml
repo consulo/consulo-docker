@@ -1,0 +1,8 @@
+<consulo-plugin>
+    <id>consulo.docker</id>
+    <name>Docker</name>
+    <tags>
+        <tag>custom.language</tag>
+    </tags>
+    <version>SNAPSHOT</version>
+</consulo-plugin>

@@ -1,0 +1,186 @@
+/*
+ * Copyright 2013-2026 consulo.io
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ * http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+
+{
+  parserClass            = "consulo.docker.language.impl.syntax.DockerfileSyntaxParser"
+  extends                = "consulo.docker.language.impl.psi.DockerfileElementImpl"
+  version                = "3"
+
+  psiClassPrefix         = "Dockerfile"
+  psiImplClassSuffix     = "Impl"
+  psiPackage             = "consulo.docker.language.psi"
+  psiImplPackage         = "consulo.docker.language.impl.psi"
+  psiVisitorName         = "DockerfileElementVisitor"
+
+  elementTypeHolderClass = "consulo.docker.language.psi.DockerfileTypes"
+  elementTypeClass       = "consulo.docker.language.DockerfileElementType"
+  tokenTypeClass         = "consulo.docker.language.DockerfileTokenType"
+
+  implements("instruction") = "consulo.docker.language.psi.DockerfileElement"
+  extends(".*_instruction") = instruction
+
+  tokens = [
+    COMMENT
+
+    FROM_KEYWORD = 'FROM'
+    RUN_KEYWORD = 'RUN'
+    CMD_KEYWORD = 'CMD'
+    LABEL_KEYWORD = 'LABEL'
+    EXPOSE_KEYWORD = 'EXPOSE'
+    ENV_KEYWORD = 'ENV'
+    ADD_KEYWORD = 'ADD'
+    COPY_KEYWORD = 'COPY'
+    ENTRYPOINT_KEYWORD = 'ENTRYPOINT'
+    VOLUME_KEYWORD = 'VOLUME'
+    USER_KEYWORD = 'USER'
+    WORKDIR_KEYWORD = 'WORKDIR'
+    ARG_KEYWORD = 'ARG'
+    ONBUILD_KEYWORD = 'ONBUILD'
+    STOPSIGNAL_KEYWORD = 'STOPSIGNAL'
+    HEALTHCHECK_KEYWORD = 'HEALTHCHECK'
+    SHELL_KEYWORD = 'SHELL'
+    MAINTAINER_KEYWORD = 'MAINTAINER'
+    AS_KEYWORD = 'AS'
+    NONE_KEYWORD = 'NONE'
+
+    EQ = '='
+    COLON = ':'
+    AT = '@'
+    COMMA = ','
+    L_BRACKET = '['
+    R_BRACKET = ']'
+
+    FLAG_TOKEN
+    DOUBLE_QUOTED_STRING
+    SINGLE_QUOTED_STRING
+    VARIABLE
+    NUMBER
+    IDENTIFIER
+  ]
+}
+
+dockerfile ::= item_*
+
+private item_ ::= instruction | COMMENT {
+  recoverWhile = item_recover_
+}
+
+private item_recover_ ::= !(FROM_KEYWORD | RUN_KEYWORD | CMD_KEYWORD | LABEL_KEYWORD
+  | EXPOSE_KEYWORD | ENV_KEYWORD | ADD_KEYWORD | COPY_KEYWORD | ENTRYPOINT_KEYWORD
+  | VOLUME_KEYWORD | USER_KEYWORD | WORKDIR_KEYWORD | ARG_KEYWORD | ONBUILD_KEYWORD
+  | STOPSIGNAL_KEYWORD | HEALTHCHECK_KEYWORD | SHELL_KEYWORD | MAINTAINER_KEYWORD
+  | COMMENT)
+
+instruction ::= from_instruction
+  | run_instruction
+  | cmd_instruction
+  | label_instruction
+  | expose_instruction
+  | env_instruction
+  | add_instruction
+  | copy_instruction
+  | entrypoint_instruction
+  | volume_instruction
+  | user_instruction
+  | workdir_instruction
+  | arg_instruction
+  | onbuild_instruction
+  | stopsignal_instruction
+  | healthcheck_instruction
+  | shell_instruction
+  | maintainer_instruction
+
+// FROM [--platform=<platform>] <image>[:<tag>|@<digest>] [AS <name>]
+from_instruction ::= FROM_KEYWORD flag* image_name (AS_KEYWORD IDENTIFIER)? {
+  pin = 1
+}
+
+image_name ::= (IDENTIFIER | VARIABLE | DOUBLE_QUOTED_STRING)
+  (':' (IDENTIFIER | VARIABLE | NUMBER))?
+  ('@' (IDENTIFIER | VARIABLE))?
+
+flag ::= FLAG_TOKEN ('=' flag_value)?
+private flag_value ::= IDENTIFIER | DOUBLE_QUOTED_STRING | SINGLE_QUOTED_STRING | NUMBER | VARIABLE
+
+// RUN <command> or RUN ["executable", "param1", "param2"]
+run_instruction ::= RUN_KEYWORD (exec_form | shell_command) { pin = 1 }
+
+// CMD ["executable","param1"] or CMD command param1
+cmd_instruction ::= CMD_KEYWORD (exec_form | shell_command) { pin = 1 }
+
+// ENTRYPOINT ["executable","param1"] or ENTRYPOINT command param1
+entrypoint_instruction ::= ENTRYPOINT_KEYWORD (exec_form | shell_command) { pin = 1 }
+
+// SHELL ["executable","param1","param2"]
+shell_instruction ::= SHELL_KEYWORD exec_form { pin = 1 }
+
+// Exec form: ["item", "item", ...]
+exec_form ::= '[' string_literal (',' string_literal)* ']' { pin = 1 }
+
+private string_literal ::= DOUBLE_QUOTED_STRING | SINGLE_QUOTED_STRING
+
+// Shell command: any text to end of logical line
+shell_command ::= (IDENTIFIER | VARIABLE | DOUBLE_QUOTED_STRING
+  | SINGLE_QUOTED_STRING | FLAG_TOKEN | NUMBER | EQ | COLON | AT | COMMA)+
+
+// LABEL <key>=<value> [<key>=<value> ...]
+label_instruction ::= LABEL_KEYWORD label_entry+ { pin = 1 }
+label_entry ::= label_key '=' label_value
+private label_key ::= IDENTIFIER | DOUBLE_QUOTED_STRING | VARIABLE
+private label_value ::= IDENTIFIER | DOUBLE_QUOTED_STRING | SINGLE_QUOTED_STRING | NUMBER | VARIABLE
+
+// EXPOSE <port>[/<protocol>]
+expose_instruction ::= EXPOSE_KEYWORD expose_entry+ { pin = 1 }
+expose_entry ::= (NUMBER | VARIABLE) ('/' (IDENTIFIER | VARIABLE))?
+
+// ENV <key>=<value> or ENV <key> <value>
+env_instruction ::= ENV_KEYWORD env_entry+ { pin = 1 }
+env_entry ::= (IDENTIFIER | VARIABLE) ('=' env_value)?
+private env_value ::= IDENTIFIER | DOUBLE_QUOTED_STRING | SINGLE_QUOTED_STRING | NUMBER | VARIABLE
+
+// ADD [--chown=<user>:<group>] <src>... <dest>
+add_instruction ::= ADD_KEYWORD flag* file_argument+ { pin = 1 }
+
+// COPY [--from=<name>] [--chown=<user>:<group>] <src>... <dest>
+copy_instruction ::= COPY_KEYWORD flag* file_argument+ { pin = 1 }
+
+private file_argument ::= IDENTIFIER | DOUBLE_QUOTED_STRING | SINGLE_QUOTED_STRING | VARIABLE
+
+// VOLUME ["/data"] or VOLUME /data /data2
+volume_instruction ::= VOLUME_KEYWORD (exec_form | file_argument+) { pin = 1 }
+
+// USER <user>[:<group>]
+user_instruction ::= USER_KEYWORD (IDENTIFIER | VARIABLE | NUMBER)
+  (':' (IDENTIFIER | VARIABLE | NUMBER))? { pin = 1 }
+
+// WORKDIR /path/to/workdir
+workdir_instruction ::= WORKDIR_KEYWORD file_argument { pin = 1 }
+
+// ARG <name>[=<default>]
+arg_instruction ::= ARG_KEYWORD IDENTIFIER ('=' arg_default_value)? { pin = 1 }
+private arg_default_value ::= IDENTIFIER | DOUBLE_QUOTED_STRING | SINGLE_QUOTED_STRING | NUMBER | VARIABLE
+
+// ONBUILD <INSTRUCTION>
+onbuild_instruction ::= ONBUILD_KEYWORD instruction { pin = 1 }
+
+// STOPSIGNAL signal
+stopsignal_instruction ::= STOPSIGNAL_KEYWORD (IDENTIFIER | NUMBER | VARIABLE) { pin = 1 }
+
+// HEALTHCHECK [OPTIONS] CMD command or HEALTHCHECK NONE
+healthcheck_instruction ::= HEALTHCHECK_KEYWORD (NONE_KEYWORD | (flag* CMD_KEYWORD shell_command)) { pin = 1 }
+
+// MAINTAINER <name> (deprecated)
+maintainer_instruction ::= MAINTAINER_KEYWORD shell_command { pin = 1 }

@@ -1,0 +1,14 @@
+server.name:
+  text: Docker
+docker.host.label:
+  text: "Docker host:"
+certificates.path.label:
+  text: "Certificates path:"
+error.deploy.not.supported:
+  text: Deploy is not supported
+error.daemon.not.available:
+  text: "Docker daemon is not available (exit code: {0})"
+error.connect.failed:
+  text: "Failed to connect to Docker: {0}"
+error.list.containers.failed:
+  text: "Failed to list containers: {0}"
