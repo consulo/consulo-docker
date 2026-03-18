@@ -19,6 +19,7 @@ package consulo.docker.impl.remote;
 import com.github.dockerjava.api.DockerClient;
 import com.github.dockerjava.api.model.Container;
 import consulo.docker.impl.localize.DockerLocalize;
+import consulo.localize.LocalizeValue;
 import consulo.remoteServer.configuration.deployment.DeploymentConfiguration;
 import consulo.remoteServer.runtime.deployment.DeploymentLogManager;
 import consulo.remoteServer.runtime.deployment.DeploymentStatus;
@@ -39,7 +40,7 @@ public class DockerRuntimeInstance extends ServerRuntimeInstance<DeploymentConfi
 
     @Override
     public void deploy(DeploymentTask<DeploymentConfiguration> task, DeploymentLogManager logManager, DeploymentOperationCallback callback) {
-        callback.errorOccurred(DockerLocalize.errorDeployNotSupported().get());
+        callback.errorOccurred(DockerLocalize.errorDeployNotSupported());
     }
 
     @Override
@@ -60,13 +61,13 @@ public class DockerRuntimeInstance extends ServerRuntimeInstance<DeploymentConfi
                         name,
                         new DockerContainerRuntime(myDockerClient, container.getId()),
                         status,
-                        container.getStatus()
+                        LocalizeValue.ofNullable(container.getStatus())
                 );
             }
             callback.succeeded();
         }
         catch (Exception e) {
-            callback.errorOccurred(DockerLocalize.errorListContainersFailed(e.getMessage()).get());
+            callback.errorOccurred(DockerLocalize.errorListContainersFailed(e.getMessage()));
         }
     }
 

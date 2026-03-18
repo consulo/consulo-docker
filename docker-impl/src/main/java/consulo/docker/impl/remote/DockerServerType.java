@@ -16,6 +16,7 @@
 
 package consulo.docker.impl.remote;
 
+import com.github.dockerjava.api.DockerClient;
 import consulo.annotation.component.ExtensionImpl;
 import consulo.configurable.ConfigurationException;
 import consulo.disposer.Disposable;
@@ -37,11 +38,11 @@ import consulo.ui.Label;
 import consulo.ui.TextBox;
 import consulo.ui.annotation.RequiredUIAccess;
 import consulo.ui.layout.VerticalLayout;
-import com.github.dockerjava.api.DockerClient;
 import org.jspecify.annotations.Nullable;
 
 import java.util.Collections;
 import java.util.List;
+import java.util.Objects;
 
 @ExtensionImpl
 public class DockerServerType extends ServerType<DockerServerConfiguration> {
@@ -82,8 +83,11 @@ public class DockerServerType extends ServerType<DockerServerConfiguration> {
             @RequiredUIAccess
             @Override
             public boolean isModified() {
-                return !configuration.getDockerHost().equals(myDockerHostField.getValue())
-                        || !configuration.getCertPath().equals(myCertPathField.getValue());
+                if (myDockerHostField == null) {
+                    return false;
+                }
+                return !Objects.equals(configuration.getDockerHost(), myDockerHostField.getValue())
+                        || !Objects.equals(configuration.getCertPath(), myCertPathField.getValue());
             }
 
             @RequiredUIAccess
@@ -135,7 +139,7 @@ public class DockerServerType extends ServerType<DockerServerConfiguration> {
                     callback.connected(new DockerRuntimeInstance(configuration, dockerClient));
                 }
                 catch (Exception e) {
-                    callback.errorOccurred(DockerLocalize.errorConnectFailed(e.getMessage()).get());
+                    callback.errorOccurred(DockerLocalize.errorConnectFailed(e.getMessage()));
                 }
             }
         };

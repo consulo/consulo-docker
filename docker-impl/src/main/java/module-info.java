@@ -25,4 +25,6 @@ module consulo.docker.impl {
 
     exports consulo.docker.impl.remote;
     exports consulo.docker.impl.localize;
+
+    opens consulo.docker.impl.remote to consulo.util.xml.serializer;
 }

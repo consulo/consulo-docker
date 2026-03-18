@@ -17,6 +17,7 @@
 package consulo.docker.impl.remote;
 
 import com.github.dockerjava.api.DockerClient;
+import consulo.localize.LocalizeValue;
 import consulo.remoteServer.runtime.deployment.DeploymentRuntime;
 
 public class DockerContainerRuntime extends DeploymentRuntime {
@@ -40,7 +41,7 @@ public class DockerContainerRuntime extends DeploymentRuntime {
             callback.succeeded();
         }
         catch (Exception e) {
-            callback.errorOccurred("Failed to remove container: " + e.getMessage());
+            callback.errorOccurred(LocalizeValue.of("Failed to remove container: " + e.getMessage()));
         }
     }
 }
