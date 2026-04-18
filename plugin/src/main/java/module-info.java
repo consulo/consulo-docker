@@ -15,7 +15,6 @@
  */
 
 module consulo.docker {
-    requires consulo.ide.api;
     requires consulo.docker.language.api;
     requires consulo.docker.language.impl;
     requires consulo.docker.impl;
