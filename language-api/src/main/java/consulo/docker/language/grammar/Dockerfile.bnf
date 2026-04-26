@@ -62,6 +62,24 @@
     COMMA = ','
     L_BRACKET = '['
     R_BRACKET = ']'
+    AMPAMP = '&&'
+    BARBAR = '||'
+    BAR = '|'
+    AMP = '&'
+    STAR = '*'
+    L_PAREN = '('
+    R_PAREN = ')'
+    L_CURLY = '{'
+    R_CURLY = '}'
+    SEMI = ';'
+    SEMISEMI = ';;'
+    LT = '<'
+    GT = '>'
+    GTGT = '>>'
+    LTLT = '<<'
+    QUESTION = '?'
+    BANG = '!'
+    BACKSLASH = '\'
 
     FLAG_TOKEN
     DOUBLE_QUOTED_STRING
@@ -134,7 +152,9 @@ private string_literal ::= DOUBLE_QUOTED_STRING | SINGLE_QUOTED_STRING
 
 // Shell command: any text to end of logical line
 shell_command ::= (IDENTIFIER | VARIABLE | DOUBLE_QUOTED_STRING
-  | SINGLE_QUOTED_STRING | FLAG_TOKEN | NUMBER | EQ | COLON | AT | COMMA)+
+  | SINGLE_QUOTED_STRING | FLAG_TOKEN | NUMBER | EQ | COLON | AT | COMMA
+  | AMPAMP | BARBAR | BAR | AMP | STAR | L_PAREN | R_PAREN | L_CURLY | R_CURLY
+  | SEMI | SEMISEMI | LT | GT | GTGT | LTLT | QUESTION | BANG | BACKSLASH)+
 
 // LABEL <key>=<value> [<key>=<value> ...]
 label_instruction ::= LABEL_KEYWORD label_entry+ { pin = 1 }

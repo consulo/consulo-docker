@@ -48,6 +48,16 @@ public class DockerfileParsingTest extends SimpleParsingTest<Object> {
         doTest(context, null);
     }
 
+    @Test
+    public void testMultiLineRun(Context context) throws Exception {
+        doTest(context, null);
+    }
+
+    @Test
+    public void testCaseShellCommand(Context context) throws Exception {
+        doTest(context, null);
+    }
+
     @Nonnull
     @Override
     protected LanguageFileType getFileType(@Nonnull Context context, @Nullable Object o) {

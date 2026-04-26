@@ -108,6 +108,24 @@ COMMENT=#[^\r\n]*
   ","                         { return DockerfileTypes.COMMA; }
   "["                         { return DockerfileTypes.L_BRACKET; }
   "]"                         { return DockerfileTypes.R_BRACKET; }
+  "&&"                        { return DockerfileTypes.AMPAMP; }
+  "||"                        { return DockerfileTypes.BARBAR; }
+  "|"                         { return DockerfileTypes.BAR; }
+  "&"                         { return DockerfileTypes.AMP; }
+  "*"                         { return DockerfileTypes.STAR; }
+  "("                         { return DockerfileTypes.L_PAREN; }
+  ")"                         { return DockerfileTypes.R_PAREN; }
+  "{"                         { return DockerfileTypes.L_CURLY; }
+  "}"                         { return DockerfileTypes.R_CURLY; }
+  ";;"                        { return DockerfileTypes.SEMISEMI; }
+  ";"                         { return DockerfileTypes.SEMI; }
+  ">>"                        { return DockerfileTypes.GTGT; }
+  ">"                         { return DockerfileTypes.GT; }
+  "<<"                        { return DockerfileTypes.LTLT; }
+  "<"                         { return DockerfileTypes.LT; }
+  "?"                         { return DockerfileTypes.QUESTION; }
+  "!"                         { return DockerfileTypes.BANG; }
+  "\\"                        { return DockerfileTypes.BACKSLASH; }
 
   {DOUBLE_QUOTED_STRING}      { return DockerfileTypes.DOUBLE_QUOTED_STRING; }
   {SINGLE_QUOTED_STRING}      { return DockerfileTypes.SINGLE_QUOTED_STRING; }
