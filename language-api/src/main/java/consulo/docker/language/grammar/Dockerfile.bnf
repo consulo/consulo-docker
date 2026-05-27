@@ -177,7 +177,7 @@ add_instruction ::= ADD_KEYWORD flag* file_argument+ { pin = 1 }
 // COPY [--from=<name>] [--chown=<user>:<group>] <src>... <dest>
 copy_instruction ::= COPY_KEYWORD flag* file_argument+ { pin = 1 }
 
-private file_argument ::= IDENTIFIER | DOUBLE_QUOTED_STRING | SINGLE_QUOTED_STRING | VARIABLE
+private file_argument ::= IDENTIFIER | DOUBLE_QUOTED_STRING | SINGLE_QUOTED_STRING | VARIABLE | STAR | QUESTION
 
 // VOLUME ["/data"] or VOLUME /data /data2
 volume_instruction ::= VOLUME_KEYWORD (exec_form | file_argument+) { pin = 1 }
