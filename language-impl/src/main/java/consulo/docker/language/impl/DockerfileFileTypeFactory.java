@@ -18,6 +18,8 @@ package consulo.docker.language.impl;
 
 import consulo.annotation.component.ExtensionImpl;
 import consulo.docker.language.DockerfileFileType;
+import consulo.docker.language.ignore.DockerIgnoreFileType;
+import consulo.docker.language.ignore.DockerIgnoreLanguage;
 import consulo.virtualFileSystem.fileType.FileNameMatcherFactory;
 import consulo.virtualFileSystem.fileType.FileTypeConsumer;
 import consulo.virtualFileSystem.fileType.FileTypeFactory;
@@ -37,5 +39,11 @@ public class DockerfileFileTypeFactory extends FileTypeFactory {
     public void createFileTypes(@Nonnull FileTypeConsumer consumer) {
         consumer.consume(DockerfileFileType.INSTANCE);
         consumer.consume(DockerfileFileType.INSTANCE, myFileNameMatcherFactory.createExactFileNameMatcher("Dockerfile"));
+
+        consumer.consume(
+            DockerIgnoreFileType.INSTANCE,
+            myFileNameMatcherFactory.createExactFileNameMatcher(DockerIgnoreLanguage.INSTANCE.getFilename())
+        );
+        consumer.consume(DockerIgnoreFileType.INSTANCE, DockerIgnoreLanguage.INSTANCE.getExtension());
     }
 }

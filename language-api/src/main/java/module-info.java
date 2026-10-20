@@ -16,8 +16,10 @@
 
 module consulo.docker.language.api {
     requires transitive consulo.language.api;
+    requires transitive consulo.language.ignore.api;
 
     exports consulo.docker.language;
+    exports consulo.docker.language.ignore;
     exports consulo.docker.language.psi;
 
     exports consulo.docker.language.icon;

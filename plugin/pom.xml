@@ -24,6 +24,7 @@
                 <updatePolicy>interval:60</updatePolicy>
             </snapshots>
         </repository>
+
     </repositories>
 
     <build>
@@ -52,6 +53,12 @@
     </build>
 
     <dependencies>
+        <dependency>
+            <groupId>consulo</groupId>
+            <artifactId>consulo-language-ignore-api</artifactId>
+            <version>${project.version}</version>
+            <scope>provided</scope>
+        </dependency>
         <dependency>
             <groupId>consulo</groupId>
             <artifactId>consulo-language-api</artifactId>
