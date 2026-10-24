@@ -22,7 +22,7 @@ import consulo.configurable.ConfigurationException;
 import consulo.disposer.Disposable;
 import consulo.docker.impl.localize.DockerLocalize;
 import consulo.docker.language.icon.DockerfileIconGroup;
-import consulo.execution.configuration.ui.SettingsEditor;
+import consulo.execution.configuration.fragment.RunConfigurationFragmentEditor;
 import consulo.project.Project;
 import consulo.remoteServer.RemoteServerConfigurable;
 import consulo.remoteServer.ServerType;
@@ -121,7 +121,7 @@ public class DockerServerType extends ServerType<DockerServerConfiguration> {
 
             @Nullable
             @Override
-            public SettingsEditor<DeploymentConfiguration> createEditor(DeploymentSource source,
+            public RunConfigurationFragmentEditor<DeploymentConfiguration> createEditor(DeploymentSource source,
                                                                         @Nullable RemoteServer<DockerServerConfiguration> server) {
                 return null;
             }
